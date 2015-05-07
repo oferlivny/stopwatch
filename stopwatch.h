@@ -1,3 +1,6 @@
+#ifndef _STOPWATCH_H_
+#define _STOPWATCH_H_
+
 #include <sys/time.h>
 
 #include <string>
@@ -35,4 +38,4 @@ class StopWatch {
 
 
 };
-
+#endif // _STOPWATCH_H_
