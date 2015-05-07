@@ -12,12 +12,14 @@
 
 #include "stopwatch.h"
 
+#define TimeVal StopWatch::TimeVal
+
 void StopWatch::clear() {
 	pending.clear();
 	reports.clear();
 }
 
-Delta subtract(TimeVal a, TimeVal b) {
+uint64_t subtract(TimeVal a, TimeVal b) {
 	// returns a-b
 	  /* Perform the carry for the later subtraction by updating y. */
 	TimeVal tempb=b;
@@ -39,14 +41,14 @@ Delta subtract(TimeVal a, TimeVal b) {
 	        res.tv_usec = a.tv_usec - tempb.tv_usec;
 
 		  /* Return 1 if result is negative. */
-		Delta dt = res.tv_sec * 1000 + res.tv_usec / 1000;
+		uint64_t dt = res.tv_sec * 1000 + res.tv_usec / 1000;
 		return dt;
 }
 
-Delta StopWatch::deltaSince(const TimeVal &t) {
+uint64_t StopWatch::deltaSince(const TimeVal &t) {
 	TimeVal now;
 	setToNow(now);
-	Delta dt = subtract(now,t);
+	uint64_t dt = subtract(now,t);
 	return dt;
 };
 
@@ -62,16 +64,16 @@ void StopWatch::start(const std::string &tag) {
 
 void StopWatch::stop(const std::string &tag) {
        assert(pending.find(tag)!=pending.end());
-       Delta dt = deltaSince(pending[tag]);
+       uint64_t dt = deltaSince(pending[tag]);
 	reports[tag].push_back(dt);
 	pending.erase(tag);
 };
 
-Delta StopWatch::getAverage(const std::string &tag) {
+uint64_t StopWatch::getAverage(const std::string &tag) {
 	assert(reports.find(tag)!=reports.end());
 	ReportsVec &v=reports[tag];
 	int count = v.size();
-	Delta avg = std::accumulate(v.begin(),v.end(), 0) / count;
+	uint64_t avg = std::accumulate(v.begin(),v.end(), 0) / count;
 	return avg;
 }
 

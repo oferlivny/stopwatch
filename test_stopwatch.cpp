@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <iostream>
 using std::cout;
+#define TimeVal StopWatch::TimeVal
 
 StopWatch g_sw;
 
@@ -35,14 +36,14 @@ void testBase(int usleep_ms, int iterations, std::string &tag, StopWatch &sw) {
 bool check_helper(TestHelper h, StopWatch &sw) {
 #if ( _OPTIMIZE_ == 0) 
 	double allowed_perc = 0.02;
-	Delta allowed_ms = 10;
+	uint64_t allowed_ms = 10;
 #else 
 	double allowed_perc = 0.01;
-	Delta allowed_ms = 1;
+	uint64_t allowed_ms = 1;
 #endif
-	Delta dt = sw.getAverage(h.tag);
-	Delta low_boundary = MIN ( h.sleep - allowed_perc * h.sleep, h.sleep - allowed_ms );
-	Delta high_boundary = MAX ( h.sleep + allowed_perc * h.sleep, h.sleep + allowed_ms );
+	uint64_t dt = sw.getAverage(h.tag);
+	uint64_t low_boundary = MIN ( h.sleep - allowed_perc * h.sleep, h.sleep - allowed_ms );
+	uint64_t high_boundary = MAX ( h.sleep + allowed_perc * h.sleep, h.sleep + allowed_ms );
 	bool res = (dt <= high_boundary && dt >= low_boundary);
 	if (!res) 
 		std::cout << "Warning. Expected " << h.sleep << " but got " << dt << std::endl;
