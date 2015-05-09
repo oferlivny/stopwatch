@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <sstream>
 #include <numeric> // accumulate
-
+#include <thread>
 #include <time.h>
 #include <iostream>
 
@@ -93,6 +93,7 @@ std::string StopWatch::report(const std::string &tag) {
 	uint64_t avg = getAverage(tag);
 	double bias_max_perc = double(r.max) / double(avg) * 100.0;
 	double bias_min_perc = double(r.min) / double(avg) * 100.0;
+	str << std::this_thread::get_id();
 	str << std::setw(30) << tag << " (" << std::setw(10) << r.count << "x) :" << std::setw(10) << getAverage(tag) << " ms";
 	str << " (" << std::fixed << std::setw(3) << std::setprecision(0) << bias_min_perc << "%-" << std::setw(3) << std::setprecision(0) << bias_max_perc << "%)" ;
 	return str.str();
@@ -106,4 +107,5 @@ std::string StopWatch::reportAll() {
 	}
 	return str.str();
 }
+
 

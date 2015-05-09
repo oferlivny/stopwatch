@@ -57,27 +57,50 @@ void testA(int usleep_ms, int iterations) {
 };
 
 
-void testB(std::vector<TestHelper> tests) {
+void testWithHelper(std::vector<TestHelper> tests) {
 	SW_CLEAR;
-	SW_START("testB");
+	SW_START("testWithHelper");
 	for (size_t i=0; i<tests.size(); i++) {
 		testBase(tests[i].sleep, tests[i].iter, tests[i].tag);
 	}
 	for (size_t i=0; i<tests.size(); i++) {
 		swassert(check_helper(tests[i]));
 	}
-	SW_STOP("testB");
-	std::cout << SW_STR_REPORT_ALL << std::endl;
+	SW_STOP("testWithHelper");
+//	std::cout << SW_STR_REPORT_ALL << std::endl;
 };
 
+void *threadedTest(void *obj) {
+	std::vector<TestHelper> *test = (std::vector<TestHelper> *) obj;
+	testWithHelper(*test);
+}
+void threadedTests(std::vector<TestHelper> test, int n_threads) {
+	std::vector<pthread_t *> threads;
+	for (int i = 0 ; i < n_threads ; i++ ) {
+		pthread_t *t = new pthread_t;
+		threads.push_back(t);
+		if (pthread_create(t, NULL, threadedTest, &test)) {
+			std::cout << "Error creating thread " << i;
+			assert(0);
+		}
+	}
+
+	for (size_t i = 0 ; i < threads.size() ; i++) {
+		if (pthread_join(*threads[i], NULL)) {
+			std::cout << "Error joining thread " << i;
+			assert(0);
+		}
+	}
+}
 int main() {
 	std::cout << "TestA" << std::endl;
 	testA(200,10);
 
 	std::vector<TestHelper> tests = { { 10, 100, "Ten" } , { 100, 20, "Houndred" } , { 1000, 3, "Thousand" }};
 	std::cout << "TestB" << std::endl;
-	testB(tests);
-	
-	std::cout << "Done";
+	testWithHelper(tests);
+	std::cout << "Threaded" << std::endl;
+	threadedTests(tests,5);	
+	std::cout << "Done" << std::endl;
 	return 0;
 }
