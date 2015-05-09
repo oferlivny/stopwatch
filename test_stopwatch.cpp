@@ -61,12 +61,14 @@ void testA(int usleep_ms, int iterations) {
 
 void testB(std::vector<TestHelper> tests) {
 	g_sw.clear();
+	g_sw.start("testB");
 	for (size_t i=0; i<tests.size(); i++) {
 		testBase(tests[i].sleep, tests[i].iter, tests[i].tag, g_sw);
 	}
 	for (size_t i=0; i<tests.size(); i++) {
 		swassert(check_helper(tests[i],g_sw));
 	}
+	g_sw.stop("testB");
 	std::cout << g_sw.reportAll() << std::endl;
 };
 
