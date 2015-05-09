@@ -4,8 +4,6 @@
 using std::cout;
 #define TimeVal StopWatch::TimeVal
 
-StopWatch g_sw;
-
 #define swassert(X) \
 	if (!(X)) { \
 		std::cout << "Test " << #X << " failed!" << std::endl; \
@@ -21,11 +19,11 @@ class TestHelper {
 };
 
 // Simple iterate
-void testBase(int usleep_ms, int iterations, std::string &tag, StopWatch &sw) {
+void testBase(int usleep_ms, int iterations, std::string &tag) {
 	for (int i=0;i<iterations;i++) {
-		sw.start(tag);
+		SW_START(tag);
 		usleep(usleep_ms*1000);
-		sw.stop(tag);
+		SW_STOP(tag);
 	}
 }
 
@@ -33,7 +31,7 @@ void testBase(int usleep_ms, int iterations, std::string &tag, StopWatch &sw) {
 #define MAX(x,y) ((y)>(x)) ? (y) : (x)
 
 // Helper for assertions
-bool check_helper(TestHelper h, StopWatch &sw) {
+bool check_helper(TestHelper h) {
 #if ( _OPTIMIZE_ == 0) 
 	double allowed_perc = 0.02;
 	uint64_t allowed_ms = 10;
@@ -41,7 +39,7 @@ bool check_helper(TestHelper h, StopWatch &sw) {
 	double allowed_perc = 0.01;
 	uint64_t allowed_ms = 1;
 #endif
-	uint64_t dt = sw.getAverage(h.tag);
+	uint64_t dt = STOPWATCH.getAverage(h.tag);
 	uint64_t low_boundary = MIN ( h.sleep - allowed_perc * h.sleep, h.sleep - allowed_ms );
 	uint64_t high_boundary = MAX ( h.sleep + allowed_perc * h.sleep, h.sleep + allowed_ms );
 	bool res = (dt <= high_boundary && dt >= low_boundary);
@@ -52,24 +50,24 @@ bool check_helper(TestHelper h, StopWatch &sw) {
 
 // Simple test for basic usecase
 void testA(int usleep_ms, int iterations) {
-	g_sw.clear();
+	SW_CLEAR;
 	std::string tag = "Test";
-	testBase(usleep_ms,iterations,tag,g_sw);
-	swassert(check_helper(TestHelper(usleep_ms,iterations,tag),g_sw));
+	testBase(usleep_ms,iterations,tag);
+	swassert(check_helper(TestHelper(usleep_ms,iterations,tag)));
 };
 
 
 void testB(std::vector<TestHelper> tests) {
-	g_sw.clear();
-	g_sw.start("testB");
+	SW_CLEAR;
+	SW_START("testB");
 	for (size_t i=0; i<tests.size(); i++) {
-		testBase(tests[i].sleep, tests[i].iter, tests[i].tag, g_sw);
+		testBase(tests[i].sleep, tests[i].iter, tests[i].tag);
 	}
 	for (size_t i=0; i<tests.size(); i++) {
-		swassert(check_helper(tests[i],g_sw));
+		swassert(check_helper(tests[i]));
 	}
-	g_sw.stop("testB");
-	std::cout << g_sw.reportAll() << std::endl;
+	SW_STOP("testB");
+	std::cout << SW_STR_REPORT << std::endl;
 };
 
 int main() {
