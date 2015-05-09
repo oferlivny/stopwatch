@@ -1,6 +1,6 @@
 # stopwatch
 cpp threadsafe runtime performance measurement helper.
-
+(because sometimes statistics are just not enough...)
 
 ##Usage:
 
