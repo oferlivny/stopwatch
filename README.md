@@ -3,14 +3,16 @@ cpp runtime performance measurement helper.
 it is not thread safe. yet.
 
 
-Usage:
+##Usage:
 
-1. include the header file: #include "stopwatch.h"
-2. add the cpp file to your project (stopwatch.cpp)
-3. profile your code:
+1. Include the header file: #include "stopwatch.h"
+2. Add the cpp file to your project (stopwatch.cpp)
+3. Profile your code by calling **start(tag)** and **stop(tag)** before and after your code
+4. Call **report(tag)** to get a string with formatted report of your code runtime
 
+##Example:
+``` 
 StopWatch sw;
-
 void small_function() {
  g_sw.start("small_function");
  // some code
@@ -30,8 +32,7 @@ int main() {
  g_sw.start("main");
  for (int i=0;i<10;i++) big_function();
  g_sw.stop("main");
- cout << g_sw.getReport("main"); << endl;
- // cout << g_sw.getAllReports() << endl;
- 
+ cout << g_sw.report("main"); << endl;
+ cout << g_sw.reportAll() << endl;
 }
-
+``` 
