@@ -57,17 +57,17 @@ void testA(int usleep_ms, int iterations) {
 };
 
 
-void testWithHelper(std::vector<TestHelper> tests) {
+void testWithHelper(std::vector<TestHelper> tests, bool showResults = false) {
 	SW_CLEAR;
-	SW_START("testWithHelper");
+	SW_START("TestWrapper");
 	for (size_t i=0; i<tests.size(); i++) {
 		testBase(tests[i].sleep, tests[i].iter, tests[i].tag);
 	}
 	for (size_t i=0; i<tests.size(); i++) {
 		swassert(check_helper(tests[i]));
 	}
-	SW_STOP("testWithHelper");
-//	std::cout << SW_STR_REPORT_ALL << std::endl;
+	SW_STOP("TestWrapper");
+	if (showResults) std::cout << SW_STR_REPORT_ALL << std::endl;
 };
 
 void *threadedTest(void *obj) {
@@ -93,14 +93,14 @@ void threadedTests(std::vector<TestHelper> test, int n_threads) {
 	}
 }
 int main() {
-	std::cout << "TestA" << std::endl;
+	std::cout << "Testing..." << std::endl;
 	testA(200,10);
-
-	std::vector<TestHelper> tests = { { 10, 100, "Ten" } , { 100, 20, "Houndred" } , { 1000, 3, "Thousand" }};
-	std::cout << "TestB" << std::endl;
-	testWithHelper(tests);
-	std::cout << "Threaded" << std::endl;
-	threadedTests(tests,5);	
+	std::vector<TestHelper> tests = { { 10, 100, "expecting10ms" } , { 100, 20, "expecting100ms" } , { 1000, 3, "expencting1000ms" }};
+	std::cout << "Testing..." << std::endl;
+	testWithHelper(tests,true);
+	int n_threads = 5;
+	std::cout << "Testing " << n_threads << " threads" << std::endl;
+	threadedTests(tests,n_threads);	
 	std::cout << "Done" << std::endl;
 	return 0;
 }
