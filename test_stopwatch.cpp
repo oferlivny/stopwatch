@@ -67,7 +67,7 @@ void testB(std::vector<TestHelper> tests) {
 		swassert(check_helper(tests[i]));
 	}
 	SW_STOP("testB");
-	std::cout << SW_STR_REPORT << std::endl;
+	std::cout << SW_STR_REPORT_ALL << std::endl;
 };
 
 int main() {

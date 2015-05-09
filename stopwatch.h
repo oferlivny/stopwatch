@@ -22,7 +22,9 @@
 // Stop measurement
 #define SW_STOP(x) STOPWATCH.stop(x)
 // Return a string full of reports
-#define SW_STR_REPORT STOPWATCH.reportAll()
+#define SW_STR_REPORT_ALL STOPWATCH.reportAll()
+// Return a string of specific report
+#define SW_STR_REPORT(x) STOPWATCH.report(x)
 
 class StopWatch{
 	typedef struct _Report {
