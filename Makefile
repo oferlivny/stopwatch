@@ -10,3 +10,7 @@ test_stopwatch: stopwatch.h stopwatch.cpp test_stopwatch.cpp
 clean:
 	rm test_stopwatch
 
+
+push:
+	git pull origin master 
+	git push origin master
