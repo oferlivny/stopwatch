@@ -1,5 +1,7 @@
 # stopwatch
 cpp runtime performance measurement helper.
+it is not thread safe. yet.
+
 
 Usage:
 
