@@ -1,5 +1,5 @@
 #include <sys/time.h>
-
+#include <iomanip>
 #include <string>
 #include <map>
 #include <vector>
@@ -65,23 +65,34 @@ void StopWatch::start(const std::string &tag) {
 void StopWatch::stop(const std::string &tag) {
        assert(pending.find(tag)!=pending.end());
        uint64_t dt = deltaSince(pending[tag]);
-	reports[tag].push_back(dt);
+       StopWatch::Report &r = reports[tag];
+       r.count++;
+       r.sum += dt;
 	pending.erase(tag);
 };
 
 uint64_t StopWatch::getAverage(const std::string &tag) {
 	assert(reports.find(tag)!=reports.end());
-	ReportsVec &v=reports[tag];
-	int count = v.size();
-	uint64_t avg = std::accumulate(v.begin(),v.end(), 0) / count;
+	Report &r=reports[tag];
+	uint64_t avg = r.sum / r.count;
 	return avg;
 }
 
 std::string StopWatch::report(const std::string &tag) {
 	assert(reports.find(tag)!=reports.end());
 	std::stringstream str;
-	ReportsVec &v=reports[tag];
-	int count = v.size();
-	str << "Tag " << tag << " average " << getAverage(tag) << "ms count " << count;
+	Report &r=reports[tag];
+	
+	str << std::setw(30) << tag << " (" << std::setw(10) << r.count << "x) :" << std::setw(10) << getAverage(tag) << " ms " ;
 	return str.str();
 }
+
+std::string StopWatch::reportAll() {
+	std::stringstream str;
+	// TODO: add some ordering here
+	for (auto const &entry : reports) {
+		str << report(entry.first) << std::endl;
+	}
+	return str.str();
+}
+

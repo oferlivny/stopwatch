@@ -67,6 +67,7 @@ void testB(std::vector<TestHelper> tests) {
 	for (size_t i=0; i<tests.size(); i++) {
 		swassert(check_helper(tests[i],g_sw));
 	}
+	std::cout << g_sw.reportAll() << std::endl;
 };
 
 int main() {
@@ -76,7 +77,7 @@ int main() {
 	std::vector<TestHelper> tests = { { 10, 100, "Ten" } , { 100, 20, "Houndred" } , { 1000, 3, "Thousand" }};
 	std::cout << "TestB" << std::endl;
 	testB(tests);
-
+	
 	std::cout << "Done";
 	return 0;
 }

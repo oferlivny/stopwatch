@@ -14,7 +14,11 @@
 #include <iostream>
 
 class StopWatch {
-	typedef std::vector<uint64_t> ReportsVec;
+	typedef struct _Report {
+		uint64_t sum;
+		uint64_t count;
+	} Report;
+
 
 	public:
 	// This is for Posix. Can make it faster by using non-posix methods...
@@ -28,13 +32,14 @@ class StopWatch {
 
 	uint64_t getAverage(const std::string &tag);
 	std::string report(const std::string &tag);
+	std::string reportAll();
 
 	private:
 	uint64_t deltaSince(const TimeVal &t);
 	void setToNow(TimeVal &t);
 
-	std::map<std::string,TimeVal> pending;
-	std::map<std::string,ReportsVec > reports;
+	std::map<std::string, TimeVal> pending;
+	std::map<std::string, Report > reports;
 
 
 };
