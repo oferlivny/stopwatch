@@ -28,8 +28,11 @@
 
 class StopWatch{
 	typedef struct _Report {
+		_Report(): sum(0), count(0), min(0), max(0) {}
 		uint64_t sum;
 		uint64_t count;
+		uint64_t min;
+		uint64_t max;
 	} Report;
 
 

@@ -66,8 +66,16 @@ void StopWatch::stop(const std::string &tag) {
        assert(pending.find(tag)!=pending.end());
        uint64_t dt = deltaSince(pending[tag]);
        StopWatch::Report &r = reports[tag];
+       if (r.count == 0) {
+	       r.min = dt;
+	       r.max = dt;
+       } else {
+	       r.min = dt < r.min ? dt : r.min;
+	       r.max = dt > r.max ? dt : r.max;
+       }
        r.count++;
        r.sum += dt;
+       
 	pending.erase(tag);
 };
 
@@ -82,8 +90,11 @@ std::string StopWatch::report(const std::string &tag) {
 	assert(reports.find(tag)!=reports.end());
 	std::stringstream str;
 	Report &r=reports[tag];
-	
-	str << std::setw(30) << tag << " (" << std::setw(10) << r.count << "x) :" << std::setw(10) << getAverage(tag) << " ms " ;
+	uint64_t avg = getAverage(tag);
+	double bias_max_perc = double(r.max) / double(avg) * 100.0;
+	double bias_min_perc = double(r.min) / double(avg) * 100.0;
+	str << std::setw(30) << tag << " (" << std::setw(10) << r.count << "x) :" << std::setw(10) << getAverage(tag) << " ms";
+	str << " (" << std::fixed << std::setw(3) << std::setprecision(0) << bias_min_perc << "%-" << std::setw(3) << std::setprecision(0) << bias_max_perc << "%)" ;
 	return str.str();
 }
 
